@@ -12,6 +12,15 @@
 			"include": "#strings"
 		},
 		{
+			"include": "#constants"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#operators"
+		},
+		{
 			"include": "#variables"
 		}
 	],
@@ -19,24 +28,28 @@
 		"keywords": {
 			"patterns": [
 				{
-					"name": "keyword.control.gsql",
-					"match": "\\b(case|do|else|end|if|then|when|while)\\b"
+					"name": "keyword.control.clause.gsql",
+					"match": "(?i)\\b(MATCH|WHERE|RETURN|UNION|FOREACH|WITH|LIMIT|ORDER\\s+BY)\\b"
 				},
 				{
-					"name": "keyword.operator.gsql",
-					"match": "\\b[!&lt;&gt;:]?=|&lt;&gt;|&lt;|&gt;|\\+|(?&lt;!\\.)\\*|-|(?&lt;!^)/|\\|\\|\\b"
+					"name": "keyword.control.case.gsql",
+					"match": "\\b(case|do|else|end|if|then|when|while)\\b"
 				},
 				{
 					"name": "keyword.other.gsql",
 					"match": "\\b(?i)(accum|bag|compress|define|directed|distributed|drop|edge|filename|for|foreach|from|gen-data|graph|header|install|job|list|loading|map|post-accum|primary_id|print|query|quote|return|returns|reverse_edge|run|schema_change|select|separator|set|stats|temp_table|to|total_instance|tuple|typedef|undirected|use|user_defined_header|using|values|vertex|where|with)\\b"
+				},
+				{
+					"name": "keyword.other.order.gsql",
+					"match": "(?i)\\b(DESC|ASC)\\b"
 				}
 			]
 		},
 		"comments": {
 			"patterns": [
 				{
-					"name": "comment.line.double-dash.gsql",
-					"begin": "--",
+					"name": "comment.line.double-slash.gsql",
+					"begin": "//",
 					"end": "\n"
 				},
 				{
@@ -51,22 +64,77 @@
 				}
 			]
 		},
-		"strings": {
-			"name": "string.quoted.double.gsql",
-			"begin": "\"",
-			"end": "\"",
+		"constants": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.gsql",
-					"match": "\\\\."
+					"name": "constant.language.bool.gsql",
+					"match": "(?i)\\bTRUE|FALSE\\b"
+				},
+				{
+					"match": "(?i)\\bNULL\\b",
+					"name": "constant.language.missing.gsql"
 				}
 			]
 		},
-		"variables":{
+		"strings": {
 			"patterns": [
 				{
-				"name": "variable.language.gsql",
-				"match": "\\b(?i)(bool|double|datetime|fixed_binary|float|int|jsonarray|jsonobject|string|uint|vertex|edge|andaccum|arrayaccum|avgaccum|bagaccum|bitwiseandaccum|bitwiseoraccum|groupbyaccum|heapaccum|listaccum|mapaccum|maxaccum|minaccum|oraccum|setaccum|sumaccum)\\b"
+					"name": "string.quoted.double.gsql",
+					"begin": "\"",
+					"end": "\"",
+					"patterns": [
+						{
+							"name": "constant.character.escape.gsql",
+							"match": "\\\\."
+						}
+					]
+				},
+				{
+					"name": "string.quoted.single.gsql",
+					"begin": "\\'",
+					"end": "\\'",
+					"patterns": [
+						{
+							"name": "constant.character.escape.gsql",
+							"match": "\\\\."
+						}
+					]
+				}
+			]
+		},
+		"numbers": {
+			"patterns": [
+				{
+					"match": "\\b\\d+(\\.\\d+)?\\b",
+					"name": "constant.numeric.gsql"
+				}
+			]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"match": "(\\+|\\-|\\\/|\\*|\\%|\\?|!)",
+					"name": "keyword.operator.math.gsql"
+				},
+				{
+					"match": "(<=|=>|<>|<|>|=~|=)",
+					"name": "keyword.operator.compare.gsql"
+				},
+				{
+					"match": "(?i)\\b(OR|AND|XOR|IS)\\b",
+					"name": "keyword.operator.logical.gsql"
+				},
+				{
+					"match": "(?i)\\b(IN)\\b",
+					"name": "keyword.operator.in.gsql"
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"name": "variable.language.gsql",
+					"match": "\\b(?i)(bool|double|datetime|fixed_binary|float|int|jsonarray|jsonobject|string|uint|vertex|edge|andaccum|arrayaccum|avgaccum|bagaccum|bitwiseandaccum|bitwiseoraccum|groupbyaccum|heapaccum|listaccum|mapaccum|maxaccum|minaccum|oraccum|setaccum|sumaccum)\\b"
 				}
 			]
 		}
