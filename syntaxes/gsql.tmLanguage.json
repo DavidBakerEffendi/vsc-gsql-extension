@@ -6,15 +6,50 @@
 			"include": "#keywords"
 		},
 		{
+			"include": "#comments"
+		},
+		{
 			"include": "#strings"
+		},
+		{
+			"include": "#variables"
 		}
 	],
 	"repository": {
 		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.gsql",
-				"match": "\\b(case|do|else|end|if|then|when|while)\\b"
-			}]
+			"patterns": [
+				{
+					"name": "keyword.control.gsql",
+					"match": "\\b(case|do|else|end|if|then|when|while)\\b"
+				},
+				{
+					"name": "keyword.operator.gsql",
+					"match": "\\b[!&lt;&gt;:]?=|&lt;&gt;|&lt;|&gt;|\\+|(?&lt;!\\.)\\*|-|(?&lt;!^)/|\\|\\|\\b"
+				},
+				{
+					"name": "keyword.other.gsql",
+					"match": "\\b(?i)(accum|bag|compress|define|directed|distributed|drop|edge|filename|for|foreach|from|gen-data|graph|header|install|job|list|loading|map|post-accum|primary_id|print|query|quote|return|returns|reverse_edge|run|schema_change|select|separator|set|stats|temp_table|to|total_instance|tuple|typedef|undirected|use|user_defined_header|using|values|vertex|where|with)\\b"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-dash.gsql",
+					"begin": "--",
+					"end": "\n"
+				},
+				{
+					"name": "comment.line.hash.gsql",
+					"begin": "#",
+					"end": "\n"
+				},
+				{
+					"name": "comment.block.gsql",
+					"begin": "\/[*]",
+					"end": "[*](\/)"
+				}
+			]
 		},
 		"strings": {
 			"name": "string.quoted.double.gsql",
@@ -24,6 +59,14 @@
 				{
 					"name": "constant.character.escape.gsql",
 					"match": "\\\\."
+				}
+			]
+		},
+		"variables":{
+			"patterns": [
+				{
+				"name": "variable.language.gsql",
+				"match": "\\b(?i)(bool|double|datetime|fixed_binary|float|int|jsonarray|jsonobject|string|uint|vertex|edge|andaccum|arrayaccum|avgaccum|bagaccum|bitwiseandaccum|bitwiseoraccum|groupbyaccum|heapaccum|listaccum|mapaccum|maxaccum|minaccum|oraccum|setaccum|sumaccum)\\b"
 				}
 			]
 		}

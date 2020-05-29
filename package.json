@@ -2,6 +2,7 @@
     "name": "vsc-gsql-extension",
     "displayName": "GSQL Syntax Highlighting",
     "description": "GSQL syntax highlighting extension for VS Code. Inspired by jmeekhof/gsql-vim.",
+    "icon": "https://www.tigergraph.com/wp-content/uploads/2017/09/cropped-icon-512-1-192x192.png",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.45.0"
