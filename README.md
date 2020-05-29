@@ -2,6 +2,8 @@
 
 This extensions provides syntax highlighting capabilities for TigerGraph's GSQL. This was inspired by [jmeekhof/gsql-vim](https://github.com/jmeekhof/gsql-vim).
 
+NOTE! This is still in development and has quite a bit of work and testing to do
+
 ## Features
 
 Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
