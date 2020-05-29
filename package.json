@@ -1,0 +1,25 @@
+{
+    "name": "vsc-gsql-extension",
+    "displayName": "GSQL Syntax Highlighting",
+    "description": "GSQL syntax highlighting extension for VS Code. Inspired by jmeekhof/gsql-vim.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.45.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "gsql",
+            "aliases": ["GSQL", "gsql"],
+            "extensions": [".gsql"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "gsql",
+            "scopeName": "source.gsql",
+            "path": "./syntaxes/gsql.tmLanguage.json"
+        }]
+    }
+}
