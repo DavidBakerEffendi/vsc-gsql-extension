@@ -9,132 +9,525 @@
 			"include": "#comments"
 		},
 		{
+			"include": "#regexps"
+		},
+		{
+			"include": "#string_escape"
+		},
+		{
+			"include": "#string_interpolation"
+		},
+		{
 			"include": "#strings"
-		},
-		{
-			"include": "#constants"
-		},
-		{
-			"include": "#numbers"
-		},
-		{
-			"include": "#operators"
-		},
-		{
-			"include": "#variables"
 		}
 	],
 	"repository": {
 		"keywords": {
 			"patterns": [
 				{
-					"name": "keyword.control.clause.gsql",
-					"match": "(?i)\\b(MATCH|WHERE|RETURN|UNION|FOREACH|WITH|LIMIT|ORDER\\s+BY)\\b"
+					"include": "#comments"
 				},
 				{
-					"name": "keyword.control.case.gsql",
-					"match": "\\b(case|do|else|end|if|then|when|while)\\b"
+					"comment": "Create graph",
+					"captures": {
+						"1": {
+							"name": "keyword.other.create.gsql"
+						},
+						"2": {
+							"name": "keyword.other.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(create)\\s+(graph)\\s+(\\w+)\\b)",
+					"name": "meta.graph.create-graph.gsql"
 				},
 				{
-					"name": "keyword.other.gsql",
-					"match": "\\b(?i)(accum|bag|compress|define|directed|distributed|drop|edge|filename|for|foreach|from|gen-data|graph|header|install|job|list|loading|map|post-accum|primary_id|print|query|quote|return|returns|reverse_edge|run|schema_change|select|separator|set|stats|temp_table|to|total_instance|tuple|typedef|undirected|use|user_defined_header|using|values|vertex|where|with)\\b"
+					"comment": "Use graph",
+					"captures": {
+						"1": {
+							"name": "keyword.other.use-for.gsql"
+						},
+						"2": {
+							"name": "keyword.other.gsql"
+						}
+					},
+					"match": "(?i:\\b(use|for)?\\s+(graph)\\s+(\\w+)?\\b)",
+					"name": "meta.graph.use-graph.gsql"
 				},
 				{
-					"name": "keyword.other.order.gsql",
-					"match": "(?i)\\b(DESC|ASC)\\b"
+					"comment": "Vertex",
+					"captures": {
+						"1": {
+							"name": "keyword.other.create.gsql"
+						},
+						"2": {
+							"name": "entity.name.function.gsql.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(create)\\s+(vertex)\\s+(\\w+)\\b)",
+					"name": "meta.graph.create-vertex.gsql"
+				},
+				{
+					"comment": "Vertex",
+					"captures": {
+						"1": {
+							"name": "keyword.other.load.gsql"
+						},
+						"3": {
+							"name": "keyword.other.to.gsql"
+						},
+						"4": {
+							"name": "entity.name.function.gsql.gsql"
+						}
+					},
+					"match": "(?i:\\b(load)\\s(\\w+)\\s(to)\\s(vertex)\\s+(\\w+)\\b)",
+					"name": "meta.vertex.load-to-vertex.gsql"
+				},
+				{
+					"comment": "Edge",
+					"captures": {
+						"1": {
+							"name": "keyword.other.create.gsql"
+						},
+						"2": {
+							"name": "entity.name.function.gsql.gsql"
+						},
+						"3": {
+							"name": "entity.name.function.gsql.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(create)\\s+(directed|undirected)\\s+(edge)\\s+(\\w+)\\b)'",
+					"name": "meta.edge.create-edge.gsql"
+				},
+				{
+					"comment": "Edge",
+					"captures": {
+						"1": {
+							"name": "keyword.other.load.gsql"
+						},
+						"3": {
+							"name": "keyword.other.to.gsql"
+						},
+						"4": {
+							"name": "entity.name.function.gsql.gsql"
+						}
+					},
+					"match": "(?i:\\b(load)\\s(\\w+)\\s(to)\\s(edge)\\s+(\\w+)\\b)",
+					"name": "meta.edge.load-to-edge.gsql"
+				},
+				{
+					"comment": "Edge",
+					"captures": {
+						"2": {
+							"name": "entity.name.function.gsql.gsql"
+						},
+						"3": {
+							"name": "entity.name.function.gsql.gsql"
+						}
+					},
+					"match": "(?i:\\b((undirected|directed)\\s+)?(edge)\\b)",
+					"name": "meta.edge.other.gsql"
+				},
+				{
+					"comment": "Create",
+					"captures": {
+						"1": {
+							"name": "keyword.other.create.gsql"
+						},
+						"2": {
+							"name": "keyword.other.gsql"
+						},
+						"3": {
+							"name": "support.other.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(create)\\s+(online_post\\sjob|gpath_query|schema_change\\sjob|global\\sschema_change\\sjob|loading\\sjob|query|group|or\\sreplace\\squery|or\\sreplace\\sbatch\\squery|or\\sreplace\\sdistributed\\squery|secret|token|user|batch\\squery|distributed\\squery)\\s+(\\w+)\\b)",
+					"name": "meta.create.gsql"
+				},
+				{
+					"comment": "Install",
+					"captures": {
+						"1": {
+							"name": "keyword.other.install.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(install\\squery)\\s+(\\w+)\\b)",
+					"name": "meta.install.gsql"
+				},
+				{
+					"comment": "Run",
+					"captures": {
+						"1": {
+							"name": "keyword.other.run.gsql"
+						},
+						"2": {
+							"name": "keyword.other.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(run)\\s+(gpath_queryrun|((((global\\s)?schema_change)|loading)?\\sjob)|query)\\s+(\\w+)\\b)",
+					"name": "meta.run.gsql"
+				},
+				{
+					"comment": "Show",
+					"captures": {
+						"1": {
+							"name": "keyword.other.show.gsql"
+						},
+						"2": {
+							"name": "keyword.other.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(show)\\s+(loading\\sstatus|query|group|secret|token|user)\\s+(\\w+)?\\b)",
+					"name": "meta.show.gsql"
+				},
+				{
+					"comment": "Drop",
+					"captures": {
+						"1": {
+							"name": "keyword.other.drop.gsql"
+						},
+						"2": {
+							"name": "keyword.other.gsql"
+						},
+						"3": {
+							"name": "entity.name.function.gsql"
+						}
+					},
+					"match": "(?i:^\\s*(drop)\\s+(graph|vertex|edge|all|job|query(\\s(all|\\*))?|group|secret|token|user))",
+					"name": "meta.drop.gsql"
+				},
+				{
+					"comment": "GroupByAccum with N types",
+					"match": "\\b(GroupByAccum)(<)(\\s*\\w+\\s+\\w+\\s*)(\\s*,\\s*\\w+\\s+\\w+\\s*)*,\\s*(((AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum)\\s+\\w+)|((SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)<(\\w+|\\w+<\\w+>)>\\s+\\w+)|(MapAccum<\\w+,(\\w+|\\w+<\\w+>)>\\s+\\w+))(\\s*,\\s*(((AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum)\\s+\\w+)|((SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)<(\\w+|\\w+<\\w+>)>\\s+\\w+)|(MapAccum<\\w+,(\\w+|\\w+<\\w+>)>\\s+\\w+)))*(>)",
+					"name": "support.class.accum.groupby.gsql"
+				},
+				{
+					"comment": "MapAccum with N types",
+					"match": "\\b(MapAccum)\\s*(<)\\s*(\\w+)\\s*(,)\\s*(\\w+|\\w+\\s*<\\s*\\w+\\s*>)\\s*(>)",
+					"name": "support.class.accum.map"
+				},
+				{
+					"comment": "Accums with one type",
+					"match": "\\b(SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)\\s*(<)\\s*(\\w+|\\w+\\s*<\\s*\\w+\\s*>)\\s*(>)",
+					"name": "support.class.accum.withtype.gsql"
+				},
+				{
+					"comment": "Accums without types",
+					"match": "\\b(AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum)\\b",
+					"name": "support.class.accum.withouttype.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "\\*",
+					"name": "keyword.operator.star.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "(?i:\\$\\w+)",
+					"name": "keyword.control.reference.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "\\b\\d+\\.{1}\\d+\\b",
+					"name": "constant.numeric.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "\\b\\d+%{1}",
+					"name": "constant.numeric.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "\\b\\d+\\b",
+					"name": "constant.numeric.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "(?i:\\@\\@\\w+)",
+					"name": "entity.name.tag.gsql"
+				},
+				{
+					"comment": "Types",
+					"match": "(?i:\\@\\w+)",
+					"name": "support.type.gsql"
+				},
+				{
+					"comment": "Types",
+					"captures": {
+						"1": {
+							"name": "entity.name.function.vertex-edge.gsql"
+						},
+						"2": {
+							"name": "entity.name.function.minus.gsql"
+						},
+						"4": {
+							"name": "entity.name.function.greater.gsql"
+						}
+					},
+					"match": "(?xi)\\b(vertex|edge)\\s*(<)(\\w+)(>)",
+					"name": "meta.generics.other.gsql"
+				},
+				{
+					"comment": "Types",
+					"captures": {
+						"1": {
+							"name": "entity.name.type.gsql"
+						}
+					},
+					"match": "(?xi)\\b(INT|UINT|FLOAT|DOUBLE|STRING|BOOL|JSONOBJECT|JSONARRAY|DATETIME|UINT16|UINT32|UINT32_T|UINT64_T|UINT8|UINT_SET|INT32_INT32_KV_LIST|UINT32_UDT_KV_LIST|UINT32_UINT32_KV_LIST|INT16|INT32|INT32_T|INT64_T|INT8|INTEGER|INT_LIST|INT_SET)\\b",
+					"name": "meta.basetype.gsql"
+				},
+				{
+					"comment": "DDL",
+					"captures": {
+						"1": {
+							"name": "keyword.other.gsql"
+						}
+					},
+					"match": "(?xi)\\b(ABORT|ACCESS|ADD|ADMIN|AFTER|ALL|ALLOCATE|ALTER|ANALYZE|ARCHIVE|ARE|ARRANGE|ARRAY|AS|ASENSITIVE|ASYMMETRIC|AT|ATOMIC|ATTRIBUTE|AUTHORIZATION|AV|BASIC|BEFORE|BEGIN|BIGINT|BINARY|BINSTORAGE|BLOB|BOOLEAN|BOTH|BUCKET|BUCKETS|BYTEARRAY|CACHE|CALL|CALLED|CASCADE|CASCADED|CAST|CAT|CD|CHANGE|CHARACTER|CHARARRAY|CHECK|CLEAR|CLOB|CLOSE|CLUSTER|CLUSTERED|CLUSTERSTATUS|COGROUP|COLLATE|COLLECTION|COLUMN|COLUMNS|COMMENT|COMMIT|COMPACT|COMPACTIONS|COMPUTE|CONCAT|CONCATENATE|CONF|CONNECT|CONSTRAINT|COPYFROMLOCAL|COPYTOLOCAL|CORRESPONDING|CP|CROSS|CUBE|CURRENT|CURRENT_DATE|CURRENT_PATH|CURRENT_ROLE|CURRENT_TIME|CURRENT_TIMESTAMP|CURRENT_USER|CURSOR|CYCLE|DATA|DATABASE|DATABASES|DATE|DAY|DBPROPERTIES|DD|DEALLOCATE|DEC|DECIMAL|DECLARE|DECRYPT|DEFERRED|DEFINE|DEFINED|DELIMITED|DEPENDENCY|DEREF|DESCRIBE|DETERMINISTIC|DIFF|DIRECTED|DIRECTORIES|DIRECTORY|DISABLE|DISCONNECT|DISTINCT|DISTRIBUTE|DM|DROP|DRYRUN|DU|DUMP|DYNAMIC|EACH|ELEMENT|ELEM_TYPE|ELSEIF|EMPTY|ENABLE|EOL|ESCAPED|EVAL|EXCEPT|EXCHANGE|EXCLUSIVE|EXEC|EXECUTE|EXISTS|EXIT|EXPLAIN|EXTENDED|EXTERNAL|FETCH|FIELDS|FILE|FILEFORMAT|FIRST|FIXED_BINARY|FLATTEN|FLATTEN_JSON_ARRAY|FOLLOWING|FOREIGN|FORMAT|FORMATTED|FREE|FULL|FUNCTION|FUNCTIONS|GENERATE|GET|GLOBAL|GPATH|GPATH_QUERY|GQL|GQUERY|GRANT|GRAPHSQL|GROUP|GROUPING|GSHELL|HANDLER|HARD|HASH_PARTITION|HEADER|HELP|HOLD|HOLD_DDLTIME|HOST_GRAPH|HOUR|ICON|IDENTIFIED|IDENTITY|IDXPROPERTIES|IGNORE|IGNORE_IF_EXISTED|IGNORE_IF_EXISTS|ILLUSTRATE|IMMEDIATE|IMPORT|INCREMENTAL|INDEX|INDEXES|INDICATOR|INIT|INNER|INOUT|INPATH|INPUT|INPUTDRIVER|INPUTFORMAT|INPUT_LINE.FILTER|INSENSITIVE|INSTALL|ITEMS|ITERATE|JAR|JOB|JOIN|JSON|KEY|KEYS|KEY_TYPE|KILL|LANGUAGE|LARGE|LATERAL|LEADING|LEAVE|LEFT|LESS|LINES|LOAD|LOADING|LOCAL|LOCALTIME|LOCALTIMESTAMP|LOCK|LOCKS|LOGICAL|LOOP|LS|MACRO|MAPJOIN|MATCH|MATCHES|MATERIALIZED|MERGE|METHOD|MINUTE|MKDIR|MODIFIES|MODULE|MONTH|MSCK|MULTISET|MV|NATIONAL|NATURAL|NCHAR|NCLOB|NO|NONE|NOSCAN|NO_DROP|NUMERIC|OF|OFFLINE|OLD|ON|ONLINE_POST|ONLY|ONSCHEMA|OPEN|OPTIMIZE|OPTION|OUT|OUTER|OUTPUT|OUTPUTDRIVER|OUTPUTFORMAT|OVER|OVERLAPS|OVERWRITE|OWNER|PARALLEL|PARAMETER|PARTIALSCAN|PARTITION|PARTITIONED|PARTITIONS|PERCENT|PIG|PIGDUMP|PIGSTORAGE|PLUS|PRECEDING|PRECISION|PREPARE|PRESERVE|PRETTY|PRIMARY|PRINCIPALS|PROCEDURE|PROTECTION|PURGE|PWD|QUIT|QUOTE|RANGE_PARTITION|READ|READONLY|READS|REAL|REBUILD|RECORDREADER|RECORDWRITER|RECURSIVE|REDUCE|REF|REFERENCES|REFERENCING|REFRESH|REGEXP|RELEASE|RENAME|REPAIR|REPEAT|REPLACE|RESIGNAL|RESTRICT|RESULT|REVERSE_EDGE|REVOKE|REWRITE|RIGHT|RLIKE|RM|RMF|ROLE|ROLES|ROLLBACK|ROLLUP|ROW|ROWS|RUN|SAVEPOINT|SCHEMA|SCHEMAS|SCHEMA_CHANGE|SCOPE|SCROLL|SEARCH|SECOND|SECONDARY_ID|SEMI|SENSITIVE|SEPARATOR|SERDE|SERDEPROPERTIES|SERVER|SESSION_USER|SETS|SHARED|SHIP|SHOW|SHOW_DATABASE|SIGNAL|SIMILAR|SIZE|SKEWED|SMALLINT|SOME|SORT|SORTED|SPECIFIC|SPECIFICTYPE|SPLIT|SQL|SQLEXCEPTION|SQLSTATE|SQLWARNING|SSL|START|START_ID|STATISTICS|STATS|STDERR|STDIN|STDOUT|STORE|STORED|STREAM|STREAMTABLE|STRING_LIST|STRING_SET|SUBMULTISET|SYMMETRIC|SYSTEM|SYSTEM_USER|TABLE|TABLES|TABLESAMPLE|TBLPROPERTIES|TEMPORARY|TEMP_TABLE|TERMINATED|TEXTLOADER|THROUGH|TIME|TIMESTAMP|TIMEZONE_HOUR|TIMEZONE_MINUTE|TINYINT|TOKENIZE|TOKEN_LEN|TOUCH|TO_FLOAT|TO_INT|TRAILING|TRANSACTIONS|TRANSFORM|TRANSLATION|TREAT|TRIGGER|TRUNCATE|TYPE|UDF_PARTITION|UNARCHIVE|UNBOUNDED|UNDIRECTED|UNDO|UNIONTYPE|UNIQUE|UNIQUEJOIN|UNKNOWN|UNLOCK|UNNEST|UNSET|UNTIL|UPSERT|URI|USE|UTC|UTCTIMESTAMP|VAL|VALUE|VALUE_TYPE|VARCHAR|VARYING|VECTOR|VERSION|VIEW|WHENEVER|WINDOW|WITH|WITHIN|WITHOUT|YEAR|CURRENT_DEFAULT_TRANSFORM_GROUP|CURRENT_TRANSFORM_GROUP_FOR_TYPE)\\b",
+					"name": "meta.keyfunctions.ddl.gsql"
+				},
+				{
+					"comment": "DML",
+					"captures": {
+						"1": {
+							"name": "entity.name.function.gsql"
+						}
+					},
+					"match": "(?xi)\\b(ACCUM|ALIGNAS|ALIGNOF|AND|AND_EQ|ANY|ASC|ASM|AUTO|AVG|BAG|BETWEEN|BITAND|BITOR|BOOL|BREAK|BY|CASE|CATCH|CHAR|CHAR16_T|CHAR32_T|CLASS|COALESCE|COMPL|COMPRESS|CONCEPT|CONST|CONSTEXPR|CONST_CAST|CONTINUE|COUNT|CREATE|DATETIME|DATETIME_ADD|DATETIME_SUB|DECLTYPE|DEFAULT|DELETE|DESC|DISTRIBUTED|DO|DONE|DOUBLE|DYNAMIC_CAST|EDGE|ELSE|END|ENUM|ESCAPE|EXCEPTION|EXPLICIT|EXPORT|EXTERN|FALSE|.FILTER|FLOAT|FOR|FOREACH|FRIEND|FROM|GOTO|GRAPH|GSQL_INT_MAX|GSQL_INT_MIN|GSQL_UINT_MAX|HAVING|IF|IN|INLINE|INSERT|INT|INTERSECT|INTERVAL|INTO|IS|ISEMPTY|JSONARRAY|JSONOBJECT|LIKE|LIMIT|LIST|LOADACCUM|LOG|LONG|MAP|MAX|MIN|MINUS|MUTABLE|NAMESPACE|NEW|NOEXCEPT|NOT|NOT_EQ|NOW|NULL|NULLPTR|OFFSET|OPERATOR|OR|ORDER|OR_EQ|PINNED|POST-ACCUM|PRIMARY_ID|PRINT|PRIVATE|PRODUCT|PROTECTED|PUBLIC|QUERY|RAISE|RANGE|REGISTER|REINTERPRET_CAST|REQUIRES|RETURN|RETURNS|SAMPLE|SELECT|SELECTVERTEX|SET|SHORT|SIGNED|SIZEOF|STATIC|STATIC_ASSERT|STATIC_CAST|STRING|STRUCT|SUM|SWITCH|TARGET|TEMPLATE|THEN|THIS|THREAD_LOCAL|THROW|TO|TO_DATETIME|TRUE|TRY|TUPLE|TYPEDEF|TYPEID|TYPENAME|TYPES|UINT|UNION|UNSIGNED|UPDATE|USER|USING|VALUES|VERTEX|VIRTUAL|VOID|VOLATILE|WCHAR_T|WHEN|WHERE|WHILE|XOR|XOR_EQ)\\b",
+					"name": "keyword.keyfunctions.dml.gsql"
+				},
+				{
+					"include": "#strings"
+				},
+				{
+					"include": "#regexps"
 				}
 			]
 		},
 		"comments": {
 			"patterns": [
 				{
-					"name": "comment.line.double-slash.gsql",
-					"begin": "//",
-					"end": "\n"
+					"begin": "(^[ \\t]+)?(?=#)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.whitespace.comment.leading.gsql"
+						}
+					},
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"begin": "#",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.gsql"
+								}
+							},
+							"end": "\\n",
+							"name": "comment.line.number-sign.gsql"
+						}
+					]
 				},
 				{
-					"name": "comment.line.hash.gsql",
-					"begin": "#",
-					"end": "\n"
-				},
-				{
-					"name": "comment.block.gsql",
-					"begin": "\/[*]",
-					"end": "[*](\/)"
+					"begin": "(^[ \\t]+)?(?=//)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.whitespace.comment.leading.gsql"
+						}
+					},
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"begin": "//",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.gsql"
+								}
+							},
+							"end": "\\n",
+							"name": "comment.line.double-slash.gsql"
+						}
+					]
 				}
 			]
 		},
-		"constants": {
+		"regexps": {
 			"patterns": [
 				{
-					"name": "constant.language.bool.gsql",
-					"match": "(?i)\\bTRUE|FALSE\\b"
+					"begin": "/(?=\\S.*/)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.gsql"
+						}
+					},
+					"end": "/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"name": "string.regexp.gsql",
+					"patterns": [
+						{
+							"include": "#string_interpolation"
+						},
+						{
+							"match": "\\\\/",
+							"name": "constant.character.escape.slash.gsql"
+						}
+					]
 				},
 				{
-					"match": "(?i)\\bNULL\\b",
-					"name": "constant.language.missing.gsql"
+					"begin": "%r\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.gsql"
+						}
+					},
+					"end": "\\}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"name": "string.regexp.modr.gsql",
+					"patterns": [
+						{
+							"include": "#string_interpolation"
+						}
+					]
 				}
 			]
+		},
+		"string_escape": {
+			"match": "\\\\.",
+			"name": "constant.character.escape.gsql"
+		},
+		"string_interpolation": {
+			"captures": {
+				"1": {
+					"name": "punctuation.definition.string.end.gsql"
+				}
+			},
+			"match": "(#\\{)([^\\}]*)(\\})",
+			"name": "string.interpolated.gsql"
 		},
 		"strings": {
 			"patterns": [
 				{
-					"name": "string.quoted.double.gsql",
-					"begin": "\"",
-					"end": "\"",
-					"patterns": [
-						{
-							"name": "constant.character.escape.gsql",
-							"match": "\\\\."
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.string.begin.gsql"
+						},
+						"3": {
+							"name": "punctuation.definition.string.end.gsql"
 						}
-					]
+					},
+					"match": "(\\')[^\\'\\\\]*(\\')",
+					"name": "string.quoted.single.gsql"
 				},
 				{
-					"name": "string.quoted.single.gsql",
 					"begin": "\\'",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.gsql"
+						}
+					},
 					"end": "\\'",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"name": "string.quoted.single.gsql",
 					"patterns": [
 						{
-							"name": "constant.character.escape.gsql",
-							"match": "\\\\."
+							"include": "#string_escape"
 						}
 					]
-				}
-			]
-		},
-		"numbers": {
-			"patterns": [
-				{
-					"match": "\\b\\d+(\\.\\d+)?\\b",
-					"name": "constant.numeric.gsql"
-				}
-			]
-		},
-		"operators": {
-			"patterns": [
-				{
-					"match": "(\\+|\\-|\\\/|\\*|\\%|\\?|!)",
-					"name": "keyword.operator.math.gsql"
 				},
 				{
-					"match": "(<=|=>|<>|<|>|=~|=)",
-					"name": "keyword.operator.compare.gsql"
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.string.begin.gsql"
+						},
+						"3": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"match": "(`)[^`\\\\]*(`)",
+					"name": "string.quoted.other.backtick.gsql"
 				},
 				{
-					"match": "(?i)\\b(OR|AND|XOR|IS)\\b",
-					"name": "keyword.operator.logical.gsql"
+					"begin": "`",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.gsql"
+						}
+					},
+					"end": "`",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"name": "string.quoted.other.backtick.gsql",
+					"patterns": [
+						{
+							"include": "#string_escape"
+						}
+					]
 				},
 				{
-					"match": "(?i)\\b(IN)\\b",
-					"name": "keyword.operator.in.gsql"
-				}
-			]
-		},
-		"variables": {
-			"patterns": [
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.string.begin.gsql"
+						},
+						"3": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"match": "(\")[^\"#]*(\")",
+					"name": "string.quoted.double.gsql"
+				},
 				{
-					"name": "variable.language.gsql",
-					"match": "\\b(?i)(bool|double|datetime|fixed_binary|float|int|jsonarray|jsonobject|string|uint|vertex|edge|andaccum|arrayaccum|avgaccum|bagaccum|bitwiseandaccum|bitwiseoraccum|groupbyaccum|heapaccum|listaccum|mapaccum|maxaccum|minaccum|oraccum|setaccum|sumaccum)\\b"
+					"begin": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.gsql"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"name": "string.quoted.double.gsql",
+					"patterns": [
+						{
+							"include": "#string_interpolation"
+						}
+					]
+				},
+				{
+					"begin": "%\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.gsql"
+						}
+					},
+					"end": "\\}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.gsql"
+						}
+					},
+					"name": "string.other.quoted.brackets.gsql",
+					"patterns": [
+						{
+							"include": "#string_interpolation"
+						}
+					]
 				}
 			]
 		}

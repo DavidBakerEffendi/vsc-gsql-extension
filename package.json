@@ -1,9 +1,13 @@
 {
     "name": "vsc-gsql-extension",
     "displayName": "GSQL Syntax Highlighting",
-    "description": "GSQL syntax highlighting extension for VS Code. Inspired by jmeekhof/gsql-vim.",
+    "description": "GSQL syntax highlighting extension for VS Code.",
     "icon": "https://www.tigergraph.com/wp-content/uploads/2017/09/cropped-icon-512-1-192x192.png",
     "version": "0.0.1",
+    "keywords": [
+        "gsql",
+        "tigergraph"
+    ],
     "engines": {
         "vscode": "^1.45.0"
     },
@@ -11,16 +15,28 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "gsql",
-            "aliases": ["GSQL", "gsql"],
-            "extensions": [".gsql"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "gsql",
-            "scopeName": "source.gsql",
-            "path": "./syntaxes/gsql.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "gsql",
+                "aliases": [
+                    "GSQL",
+                    "gsql"
+                ],
+                "extensions": [
+                    ".gsql"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "gsql",
+                "scopeName": "source.gsql",
+                "path": "./syntaxes/gsql.tmLanguage.json"
+            }
+        ]
+    },
+    "devDependencies": {
+        "js-yaml": "^3.14.0"
     }
 }

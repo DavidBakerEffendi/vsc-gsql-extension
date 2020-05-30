@@ -1,0 +1,35 @@
+CREATE QUERY topCoLiked( vertex<User> input_user,  INT topk) FOR GRAPH gsql_demo
+{
+  SumAccum<int>  @cnt = 0;
+  # @cnt is a runtime attribute to be associated with each User vertex
+  # to record how many times a user is liked.
+    L0 = {input_user};
+    L1 = SELECT tgt
+    	   FROM L0-(Liked_By)->User:tgt;
+    L2 =  SELECT tgt
+          FROM L1-(Liked)->:tgt
+          WHERE  tgt != input_user
+          ACCUM tgt.@cnt += 1
+          ORDER BY tgt.@cnt DESC
+          LIMIT topk;
+  PRINT L2;
+}
+
+INSTALL QUERY topCoLiked
+
+INSTALL QUERY ALL
+
+SELECT * FROM User LIMIT 1000
+SELECT * FROM User-(Liked)->User WHERE from_id=="id2"
+
+DELETE FROM User WHERE primary_id=="id3"
+
+CREATE GLOBAL SCHEMA_CHANGE JOB cf_mod2 {
+	ALTER VERTEX User ADD ATTRIBUTE (name string);
+    ALTER EDGE Liked ADD ATTRIBUTE (weight float DEFAULT 1);
+}
+RUN JOB cf_mod2
+
+UPSERT User VALUES ("id1", "Aaron")
+UPSERT User VALUES ("id2", "Bobbie")
+UPSERT User-(Liked)->User VALUES ("id2","id1",2.5)
