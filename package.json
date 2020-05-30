@@ -4,6 +4,11 @@
     "description": "GSQL syntax highlighting extension for VS Code.",
     "icon": "https://www.tigergraph.com/wp-content/uploads/2017/09/cropped-icon-512-1-192x192.png",
     "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DavidBakerEffendi/vsc-gsql-extension"
+    },
+    "license": "Apache License Version 2.0",
     "keywords": [
         "gsql",
         "tigergraph"
