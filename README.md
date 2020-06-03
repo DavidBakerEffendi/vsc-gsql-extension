@@ -23,16 +23,13 @@ Planned features are linting and auto-formatting. So far we have basic syntax hi
 
 TODO: Implement GSQL linting TypeScript from GraphStudio code given to me by @jonherke
 
-## Requirements
-
-None thus far.
-
-## Known Issues
-
-- Basetypes not being highlighted inside of accumulator type parameter
-- Vertex attached accumulator variables and global variables different colours
-
 ## Release Notes
+
+### 0.0.2
+
+- Simplified accumulator regex to fix matching whole accumulator with type parameter
+- Lowered required VSCode version to ^1.3.0
+- Updated description to match README on the repository
 
 ### 0.0.1
 

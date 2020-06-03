@@ -1,7 +1,7 @@
 CREATE QUERY cc_subquery (VERTEX source, INT numVert, INT maxHops) FOR GRAPH social RETURNS(FLOAT) {
 # Subquery returns closeness centrality for vertex source in graph with numVert vertices 
         SumAccum<int> @@currDist, @@totalDist;
-         OrAccum<bool> @visited;
+        OrAccum<bool> @visited;
  
 # Initialize: Set the input vertex source as the starting point
         Start = {source};
