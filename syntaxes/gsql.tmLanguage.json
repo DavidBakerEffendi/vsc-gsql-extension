@@ -196,24 +196,9 @@
 					"name": "meta.drop.gsql"
 				},
 				{
-					"comment": "GroupByAccum with N types",
-					"match": "\\b(GroupByAccum)(<)(\\s*\\w+\\s+\\w+\\s*)(\\s*,\\s*\\w+\\s+\\w+\\s*)*,\\s*(((AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum)\\s+\\w+)|((SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)<(\\w+|\\w+<\\w+>)>\\s+\\w+)|(MapAccum<\\w+,(\\w+|\\w+<\\w+>)>\\s+\\w+))(\\s*,\\s*(((AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum)\\s+\\w+)|((SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)<(\\w+|\\w+<\\w+>)>\\s+\\w+)|(MapAccum<\\w+,(\\w+|\\w+<\\w+>)>\\s+\\w+)))*(>)",
-					"name": "support.class.accum.groupby.gsql"
-				},
-				{
-					"comment": "MapAccum with N types",
-					"match": "\\b(MapAccum)\\s*(<)\\s*(\\w+)\\s*(,)\\s*(\\w+|\\w+\\s*<\\s*\\w+\\s*>)\\s*(>)",
-					"name": "support.class.accum.map"
-				},
-				{
-					"comment": "Accums with one type",
-					"match": "\\b(SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)\\s*(<)\\s*(\\w+|\\w+\\s*<\\s*\\w+\\s*>)\\s*(>)",
-					"name": "support.class.accum.withtype.gsql"
-				},
-				{
-					"comment": "Accums without types",
-					"match": "\\b(AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum)\\b",
-					"name": "support.class.accum.withouttype.gsql"
+					"comment": "Accumulators",
+					"match": "\\b(MapAccum|GroupByAccum|AvgAccum|OrAccum|AndAccum|BitwiseOrAccum|BitwiseAndAccum|SumAccum|MaxAccum|MinAccum|ListAccum|SetAccum|BagAccum|HeapAccum|ArrayAccum)\\b",
+					"name": "support.type.accum"
 				},
 				{
 					"comment": "Types",
