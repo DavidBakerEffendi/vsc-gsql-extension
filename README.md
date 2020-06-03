@@ -9,6 +9,8 @@ NOTE! This is still in development and has quite a bit of work and testing to do
 
 ## Features
 
+Planned features are linting and auto-formatting. So far we have basic syntax highlighting working.
+
 ### Syntax Highlighting
 
 ![ConnComp Syntax ](./images/conn_comp_file.png)
@@ -23,14 +25,16 @@ TODO: Implement GSQL linting TypeScript from GraphStudio code given to me by @jo
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+None thus far.
 
 ## Known Issues
 
-TODO
+- Basetypes not being highlighted inside of accumulator type parameter
+- Vertex attached accumulator variables and global variables different colours
 
 ## Release Notes
 
 ### 0.0.1
 
-Initial release supporting basic syntax highlighting
+- Initial release
+- Basic syntax highlighting ported across from the Atom extension
