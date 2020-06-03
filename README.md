@@ -9,11 +9,17 @@ NOTE! This is still in development and has quite a bit of work and testing to do
 
 ## Features
 
-TODO
+### Syntax Highlighting
 
-\!\[feature X\]\(images/feature-x.png\)
+![ConnComp Syntax ](./images/conn_comp_file.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![feature X](./images/pageRank_file.png)
+
+`syntaxes/gsql.tmLanguage.json` contains a ported version of [alejandropoveda/atom-language-gsql](https://github.com/alejandropoveda/atom-language-gsql)'s specification of GSQL's language spec.
+
+### Linting
+
+TODO: Implement GSQL linting TypeScript from GraphStudio code given to me by @jonherke
 
 ## Requirements
 
