@@ -37,8 +37,8 @@ TODO: Implement GSQL linting TypeScript from GraphStudio code given to me by @jo
 ### Submitting a new issue
 
 There are two templates namely:
-- [Feature Requests](./.github/feature_request.md): These are used for any features/enhancements you would like to see and includes any documentation that needs to be added.
-- [Bug Report](./.github/bug_report.md): This is for reporting any bugs - self explanatory!
+- [Feature Requests](./.github/ISSUE_TEMPLATE/feature_request.md): These are used for any features/enhancements you would like to see and includes any documentation that needs to be added.
+- [Bug Report](./.github/ISSUE_TEMPLATE/bug_report.md): This is for reporting any bugs - self explanatory!
 
 ### Making a change
 
