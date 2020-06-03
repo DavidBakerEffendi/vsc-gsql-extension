@@ -9,8 +9,7 @@ CREATE QUERY conn_comp_file (FILE f, STRING v_type, STRING e_type) {
     # Initialize: Label each ertex with its own internal ID
     S = SELECT x FROM start:x
         POST-ACCUM x.@cc_id = getvid(x),
-                   x.@old_id = getvid(x)
-        ;
+                   x.@old_id = getvid(x);
 
     WHILE (start.size() > 0) DO
         start = SELECT t FROM start:s-(e_type:e)-> :t
@@ -22,8 +21,7 @@ CREATE QUERY conn_comp_file (FILE f, STRING v_type, STRING e_type) {
                     ELSE
                         t.@active = false
                     END
-                HAVING t.@active == true
-                ;
+                HAVING t.@active == true;
     END;
 
     start = {v_type.*};
