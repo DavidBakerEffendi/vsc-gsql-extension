@@ -1,0 +1,427 @@
+// #########################################################
+// ## EBNF for GSQL Query Language
+
+CREATE = "CREATE"i
+QUERY = "QUERY"i
+FOR = "FOR"i
+GRAPH = "GRAPH"i
+INSTALL = "INSTALL"i
+ALL = "ALL"i
+RUN = "RUN"i
+SHOW = "SHOW"i
+DROP = "DROP"i
+END = "END"i
+CASE = "CASE"i
+WHILE = "WHILE"i
+DO = "DO"i
+FOREACH = "FOREACH"i
+RANGE = "RANGE"i
+DELETE = "DELETE"i
+UPDATE = "UPDATE"i
+SET = "SET"i
+INSERT = "INSERT"i
+INTO = "INTO"i
+VALUES = "VALUES"i
+PRINT = "PRINT"i
+LOG = "LOG"i
+RETURN = "RETURN"i
+EXCEPTION = "EXCEPTION"i
+RAISE = "RAISE"i
+TRY = "TRY"i
+ELSE = "ELSE"i
+
+createQuery = CREATE [OR REPLACE] QUERY name "(" [parameterList] ")" FOR GRAPH name
+               [RETURNS "("  baseType / accumType ")"]
+               [API "(" stringLiteral ")"]
+               "{" [typedefs] [declStmts] [declExceptStmts] queryBodyStmts "}"
+
+parameterValueList = parameterValue [, parameterValue]*
+parameterValue = parameterConstant
+                / "[" parameterValue [, parameterValue]* "]"  // BAG or SET
+                / "(" stringLiteral "," stringLiteral ")"        // a generic VERTEX value
+parameterConstant = numeric / stringLiteral / TRUE / FALSE
+parameterList = parameterType name ["=" constant]
+                 ["," parameterType name ("=" constant)]*
+
+typedefs = (typedef ";")+
+declStmts = (declStmt ";")+
+declStmt = baseDeclStmt / accumDeclStmt / fileDeclStmt
+declExceptStmts = (declExceptStmt ";")+
+queryBodyStmts = (queryBodyStmt ";")+
+queryBodyStmt = assignStmt           // Assignment
+               / vSetVarDeclStmt      // Declaration
+               / gAccumAssignStmt     // Assignment
+               / gAccumAccumStmt      // Assignment
+               / funcCallStmt         // Function Call
+               / selectStmt           // Select 
+               / queryBodyCaseStmt    // Control Flow
+               / queryBodyIfStmt      // Control Flow
+               / queryBodyWhileStmt   // Control Flow
+               / queryBodyForEachStmt // Control Flow
+               / BREAK                // Control Flow
+               / CONTINUE             // Control Flow
+               / updateStmt           // Data Modification
+               / insertStmt           // Data Modification
+               / queryBodyDeleteStmt  // Data Modification
+               / printStmt            // Output
+               / printlnStmt          // Output
+               / logStmt              // Output
+               / returnStmt           // Output
+               / raiseStmt            // Exception
+               / tryStmt              // Exception
+
+installQuery = INSTALL QUERY [installOptions] ( "*" / ALL / name [, name]* )
+runQuery = RUN QUERY [runOptions] name "(" parameterValueList ")"
+
+showQuery = SHOW QUERY name
+dropQuery = DROP QUERY ( "*" / ALL / name [, name]* )
+
+//#########################################################
+//## Types and names
+
+lowercase          = [a-z]
+uppercase          = [A-Z]
+letter             = lowercase / uppercase
+digit              = [0-9]
+integer            = ["-"]digit+
+real               = ["-"]("." digit+) / ["-"](digit+ "." digit*)
+
+numeric            = integer / real
+stringLiteral      = '"' [~["] // '\\' ('"' / '\\')]* '"'
+
+name = (letter / "_") [letter / digit / "_"]*   // Can be a single "_" or start with "_"
+
+type = baseType / name / accumType / STRING COMPRESS
+
+STRING = "STRING"i
+COMPRESS = "COMPRESS"i
+INT = "INT"i
+UINT = "UINT"i
+FLOAT = "FLOAT"i
+DOUBLE = "DOUBLE"i
+TRUE = "true"i
+FALSE = "false"i
+BOOL = TRUE / FALSE
+VERTEX = "vertex"i
+EDGE = "edge"i
+JSONOBJECT = "JSONOBJECT"i
+JSONARRAY = "JSONARRAY"i
+DATETIME = "DATETIME"i
+TYPEDEF = "TYPEDEF"i
+TUPLE = "TUPLE"i
+FILE = "FILE"
+
+baseType = INT
+          / UINT
+          / FLOAT
+          / DOUBLE
+          / STRING
+          / BOOL
+          / VERTEX ["<" name ">"]
+          / EDGE
+          / JSONOBJECT
+          / JSONARRAY
+          / DATETIME
+
+filePath = name / stringLiteral
+
+typedef = TYPEDEF TUPLE "<" tupleType ">" name
+
+tupleType = (baseType name) / (name baseType) ["," (baseType name) / (name baseType)]*
+
+parameterType = baseType
+               / [ SET | BAG ] "<" baseType ">"
+               / FILE
+               
+//#########################################################
+//## Accumulators
+
+accumDeclStmt = accumType "@"name ["=" constant] [, "@"name _ ("=" constant)?]*
+               / "@"name ["=" constant][, "@"name ("=" constant)?]* accumType
+               / [STATIC] accumType "@@"name ["=" constant][, "@@"name ("=" constant)?]*
+               / [STATIC] "@@"name ["=" constant][, "@@"name ("=" constant)?]* accumType
+
+
+accumType = "SumAccum" "<" ( INT / FLOAT / DOUBLE / STRING / STRING COMPRESS) ">"
+		   / "MaxAccum" "<" ( INT / FLOAT / DOUBLE ) ">"
+ 	       / "MinAccum" "<" ( INT / FLOAT / DOUBLE ) ">"
+     	   / "AvgAccum"
+		   / "OrAccum"
+		   / "AndAccum"
+           / "BitwiseOrAccum"
+           / "BitwiseAndAccum"
+		   / "ListAccum" "<" type ">"
+		   / "SetAccum"  "<" elementType ">"      
+		   / "BagAccum"  "<" elementType ">"      
+           / "MapAccum"  "<" elementType "," (baseType / accumType / name) ">"   
+           / "HeapAccum" "<" name ">" "(" (integer / name) "," name [ASC / DESC] ["," name (ASC / DESC)?]* ")"
+		   / "GroupByAccum" "<" elementType name ["," elementType name]* "," accumType name ["," accumType name]* ">"
+           / "ArrayAccum" "<" name ">"
+
+elementType = baseType / name / STRING COMPRESS
+
+gAccumAccumStmt = "@@"name "+=" expr
+
+//###############################################################################
+//## Operators, Functions, and Expressions
+
+GSQL_UINT_MAX = "GSQL_UINT_MAX"i
+GSQL_INT_MAX = "GSQL_INT_MAX"i
+GSQL_INT_MIN = "GSQL_INT_MIN"i
+TO_DATETIME = "TO_DATETIME"i
+IN = "IN"i
+IS = "IS"i
+NULL = "NULL"i
+BETWEEN = "BETWEEN"i
+AND = "AND"
+NOT = "NOT"
+OR = "OR"
+COALESCE = "COALESCE"i
+COUNT = "COUNT"i
+ISEMPTY = "ISEMPTY"i
+MAX = "MAX"i
+MIN = "MIN"i
+AVG = "AVG"i
+SUM = "SUM"i
+UNION = "UNION"i
+INTERSECT = "INTERSECT"i
+MINUS = "MINUS"i
+ANY = "ANY"i
+
+
+constant = numeric / stringLiteral / TRUE / FALSE / GSQL_UINT_MAX
+          / GSQL_INT_MAX / GSQL_INT_MIN / TO_DATETIME "(" stringLiteral ")"
+ 
+mathOperator = "*" / "/" / "%" / "+" / "-" / "<<" / ">>" / "&" / "|"
+ 
+condition = expr
+           / expr comparisonOperator expr
+           / expr [ NOT ] IN setBagExpr
+           / expr IS [ NOT ] NULL
+           / expr BETWEEN expr AND expr
+           / "(" condition ")"
+           / NOT condition
+           /// condition (AND / OR) condition
+           / (TRUE / FALSE)
+           
+satCondition = condition (AND / OR) condition
+
+comparisonOperator = "<" / "<=" / ">" / ">=" / "==" / "!="
+
+expression =   ["@@"]name
+		/ name "." "type"
+		/ name "." ["@"]name
+		/ name "." "@"name ["\'"]
+		/ name "." name "." name "(" [argList] ")"
+        / name "." name "(" [argList] ")" [ ".".FILTER "(" condition / satCondition ")" ]
+		/ name ["<" type ("," type")* ">"] "(" [argList] ")"
+		/ name "." "@"name ("." name "(" [argList] ")")+ ["." name]
+		/ "@@"name ("." name "(" [argList] ")")+ ["." name]
+		/ COALESCE "(" [argList] ")"
+		/ ( COUNT / ISEMPTY / MAX / MIN / AVG / SUM ) "(" setBagExpr ")"
+		/// expr mathOperator expr
+		/ "-" expr
+		/ "(" expr ")"
+		/ "(" argList "->" argList ")"	// key value pair for MapAccum
+		/ "[" argList "]"               // a list
+		/ constant
+		/ setBagExpr
+		/ name "(" argList ")"          // function call or a tuple object 
+        
+mathExpr = expr  (mathOperator  expr)?
+
+expr = expression / mathExpr
+		
+setBagExpr = ["@@"]name 
+    	    / name "." ["@"]name
+		    / name "." "@"name ("." name "(" [argList] ")")+
+		    / name "." name "(" [argList] ")" [ ".".FILTER "(" condition / satCondition ")" ]
+		    / "@@"name ("." name "(" [argList] ")")+
+		    /// setBagExpr (UNION / INTERSECT / MINUS) setBagExpr
+		    / "(" argList ")"
+		    / "(" setBagExpr ")"
+setExpr = setBagExpr (UNION / INTERSECT / MINUS) setBagExpr
+
+
+//#########################################################
+//## Declarations and Assignments ##
+
+//## Declarations ##
+baseDeclStmt    = baseType name ["=" constant][, name ("=" constant)?]*
+fileDeclStmt = FILE fileVar "(" filePath ")"
+fileVar = name
+
+localVarDeclStmt = baseType name "=" expr
+
+vSetVarDeclStmt = name ["(" vertexEdgeType ")"] "=" (seedSet / simpleSet / selectBlock)
+
+simpleSet = name / "(" simpleSet ")" / simpleSet (UNION / INTERSECT / MINUS) simpleSet
+
+seedSet = "{" [seed ("," seed )*] "}"
+seed = '_' 
+      / ANY
+      / ["@@"]name
+      / name ".*"
+      / "SelectVertex" selectVertParams
+
+selectVertParams = "(" filePath "," columnId "," (columnId / name) ","
+                 stringLiteral "," (TRUE / FALSE) ")" [".".FILTER "(" condition ")"]
+
+columnId = "$" (integer / stringLiteral)
+
+//## Assignment Statements ##
+assignStmt = name "=" expr
+            / name "." name "=" expr
+            / name "." "@"name ("+="/ "=") expr
+
+gAccumAssignStmt =  "@@"name ("+=" / "=") expr
+
+loadAccumStmt = "@@"name "=" "{" "LOADACCUM" loadAccumParams ["," "LOADACCUM" loadAccumParams]* "}"
+
+loadAccumParams = "(" filePath "," columnId "," [columnId ","]*
+                stringLiteral "," (TRUE / FALSE) ")" [".".FILTER "(" condition ")"]
+
+//## Function Call Statement ##
+funcCallStmt = name ["<" type ("," type")* ">"] "(" [argList] ")"
+              / "@@"name ("." name "(" [argList] ")")+
+           
+argList = expr ["," expr]*
+
+//#########################################################
+//## Select Statement
+ 
+SELECT = "SELECT"i
+FROM = "FROM"i
+SAMPLE = "SAMPLE"i
+WHEN = "WHEN"i
+TARGET = "TARGET"i
+PINNED = "PINNED"i
+WHERE = "WHERE"i
+ACCUM = "ACCUM"i
+POST_ACCUM = "POST-ACCUM"i
+BREAK = "BREAK"i
+CONTINUE = "CONTINUE"i
+HAVING = "HAVING"i
+ORDER = "ORDER"i
+BY = "BY"i
+LIMIT = "LIMIT"i
+OFFSET = "OFFSET"i
+
+selectStmt  = name "=" selectBlock
+ 
+selectBlock = SELECT name FROM ( edgeSet / vertexSet )
+                    [sampleClause]
+                    [whereClause]
+                    [accumClause]
+                    [postAccumClause]
+                    [havingClause]
+                    [orderClause]
+                    [limitClause]
+  
+vertexSet = name [":" name]
+ 
+edgeSet   = name [":" name]
+             "-" "(" [vertexEdgeType] [":" name] ")" "->"
+             [vertexEdgeType] [":" name]
+
+vertexEdgeType = "_" / ANY / name / ( "(" name ["|" name]* ")" )
+
+sampleClause = SAMPLE ( expr / expr "%" ) EDGE WHEN condition
+              / SAMPLE expr TARGET WHEN condition
+              / SAMPLE expr "%" TARGET PINNED WHEN condition
+ 
+whereClause = WHERE condition
+
+accumClause = ACCUM DMLSubStmtList
+ 
+postAccumClause = POST_ACCUM DMLSubStmtList
+    
+DMLSubStmtList = DMLSubStmt ["," DMLSubStmt]*
+
+DMLSubStmt = assignStmt           // Assignment   
+            / funcCallStmt         // Function Call
+            / gAccumAccumStmt      // Assignment
+            / vAccumFuncCall       // Function Call
+            / localVarDeclStmt     // Declaration
+            / DMLSubCaseStmt       // Control Flow
+            / DMLSubIfStmt         // Control Flow
+            / DMLSubWhileStmt      // Control Flow
+            / DMLSubForEachStmt    // Control Flow
+            / BREAK                // Control Flow
+            / CONTINUE             // Control Flow
+            / insertStmt           // Data Modification
+            / DMLSubDeleteStmt     // Data Modification
+            / printlnStmt          // Output
+            / logStmt              // Output
+
+vAccumFuncCall = name "." "@"name ("." name "(" [argList] ")")+
+
+havingClause = HAVING condition
+ 
+orderClause = ORDER BY expr [ASC / DESC] ["," expr (ASC / DESC)]*
+ 
+limitClause = LIMIT ( expr / expr "," expr / expr OFFSET expr )
+
+//#########################################################
+//## Control Flow Statements ##
+
+IF = "IF"i
+THEN = "THEN"i
+
+queryBodyIfStmt = IF condition THEN queryBodyStmts [ELSE IF condition THEN queryBodyStmts ]* [ELSE queryBodyStmts ] END
+DMLSubIfStmt =    IF condition THEN DMLSubStmtList [ELSE IF condition THEN DMLSubStmtList ]* [ELSE DMLSubStmtList ] END
+
+queryBodyCaseStmt = CASE      (WHEN condition THEN queryBodyStmts)+ [ELSE queryBodyStmts] END
+    	           / CASE expr (WHEN constant  THEN queryBodyStmts)+ [ELSE queryBodyStmts] END
+DMLSubCaseStmt = CASE      (WHEN condition THEN DMLSubStmtList)+ [ELSE DMLSubStmtList] END
+                / CASE expr (WHEN constant  THEN DMLSubStmtList)+ [ELSE DMLSubStmtList] END
+
+queryBodyWhileStmt = WHILE  condition  [LIMIT (name / integer)] DO queryBodyStmts END
+DMLSubWhileStmt =    WHILE  condition  [LIMIT (name / integer)] DO DMLSubStmtList END
+
+queryBodyForEachStmt = FOREACH  forEachControl  DO  queryBodyStmts  END
+DMLSubForEachStmt =    FOREACH  forEachControl  DO  DMLSubStmtList  END
+ 
+forEachControl = ( name / "(" name ("," name)+ ")") (IN / ":") setBagExpr
+                / name IN RANGE "[" expr "," expr"]" [".STEP(" expr ")"]
+                
+//#########################################################
+//## Other Data Modifications Statements ##
+
+queryBodyDeleteStmt = DELETE name FROM ( edgeSet / vertexSet ) [whereClause] 
+DMLSubDeleteStmt = DELETE "(" name ")" 
+
+updateStmt = UPDATE name FROM ( edgeSet / vertexSet ) SET DMLSubStmtList [whereClause] 
+ 
+insertStmt = INSERT INTO name ["(" ( PRIMARY_ID / FROM "," TO ) ("," name)* ")"] 
+                  VALUES "(" ( "_" / expr ) [name] ("," ( "_" / expr ) [name] ["," ("_" / expr)]*) ")"
+                  
+//#########################################################
+//## Output Statements ##
+
+printStmt = PRINT printExpr [, printExpr] [WHERE condition] [TO_CSV (filePath / fileVar)]
+printExpr = (expr / vExprSet) [ AS name]
+vExprSet  = expr "[" vSetProj [, vSetProj] "]"
+vSetProj  = expr [ AS name]
+
+printlnStmt = fileVar".println" "(" expr [, expr] ")"
+
+logStmt = LOG "(" condition "," argList ")"
+
+returnStmt = RETURN expr
+
+//#########################################################
+//## Exception Statements ##
+
+declExceptStmt = EXCEPTION exceptVarName "(" errorInt ")"
+exceptVarName  = name
+errorInt      = integer
+
+
+raiseStmt       = RAISE exceptVarName [errorMsg]
+errorMsg        = "(" expr ")"
+
+
+tryStmt         = TRY queryBodyStmts EXCEPTION caseExceptBlock+ [elseExceptBlock] END ";"
+caseExceptBlock = WHEN exceptVarName THEN queryBodyStmts
+elseExceptBlock = ELSE queryBodyStmts
